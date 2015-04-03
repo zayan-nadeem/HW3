@@ -3,7 +3,7 @@ class MoviesController < ApplicationController
 
   def index
     if params[:sort].nil? 
-	redirect_to movies_path(:sort => session[:sort])
+	redirect_to movies_path(:sort => session[:sort]
     end
     
     @sort = params[:sort]	
