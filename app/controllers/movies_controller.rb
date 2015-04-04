@@ -5,8 +5,11 @@ class MoviesController < ApplicationController
     if params[:sort].nil? 
 	redirect_to movies_path(:sort => session[:sort])
     end
-    
-    @sort = params[:sort]	
+    @sort = params[:sort]
+	if @sort =="title"
+	@movies = Movie.order("title ASC").where(rating: @ratings)
+end
+	
   end
 
   def show
