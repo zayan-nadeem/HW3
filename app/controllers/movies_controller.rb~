@@ -2,14 +2,16 @@
 class MoviesController < ApplicationController
 
   def index
-    @ratings = params[:rating]
+
+
+    @ratings = params[:ratings]
     if @ratings.nil?
 	ratings = Movie.ratings
     else
 	ratings = @ratings.keys
     end
- #next 4 lines, I have taken from net.
     
+    #next 4 lines, I have taken from net.
     @all_ratings = Movie.ratings.inject(Hash.new) do |all_ratings, rating|
           all_ratings[rating] = @ratings.nil? ? false : @ratings.has_key?(rating)
           all_ratings
