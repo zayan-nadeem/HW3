@@ -2,16 +2,29 @@
 class MoviesController < ApplicationController
 
   def index
-    @sort_by = params[:sort]
-    if !@sort_by.nil?
-      begin	
-	@movies = Movie.order("#{@sort_by} ASC").all
-      rescue ActiveRecord::StatementInvalid
-	flash[:warning] = "Cannot Sort"
-	@movies = Movie.all 
+    @ratings = params[:ratings]
+    if @ratings.nil?
+	ratings = Movie.ratings
+    else
+	ratings = @ratings.keys
+    end
+ #next 4 lines, I have taken from net.
+    
+    @all_ratings = Movie.ratings.inject(Hash.new) do |all_ratings, rating|
+          all_ratings[rating] = @ratings.nil? ? false : @ratings.has_key?(rating)
+          all_ratings
+    end
+   @sort = params[:sort]
+  
+   if !@sort.nil?
+      begin	#if any exception
+	@movies = Movie.order("#{@sort} ASC").find_all_by_rating(ratings)
+      rescue ActiveRecord::StatementInvalid  #handling exception
+ 	flash[:warning] = "Cannot Sort"
+	@movies = Movie.find_all_by_rating(ratings) 
       end
     else
-      @movies = Movie.all
+      @movies = Movie.find_all_by_rating(ratings)
     end 			
   end
 
