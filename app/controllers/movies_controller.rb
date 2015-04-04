@@ -2,14 +2,17 @@
 class MoviesController < ApplicationController
 
   def index
-    if params[:sort].nil? 
-	redirect_to movies_path(:sort => session[:sort])
-    end
-    @sort = params[:sort]
-	if @sort =="title"
-	@movies = Movie.order("title ASC").where(rating: @ratings)
-end
-	
+    @sort_by = params[:sort]
+    if !@sort_by.nil?
+      begin	
+	@movies = Movie.order("#{@sort_by} ASC").all
+      rescue ActiveRecord::StatementInvalid
+	flash[:warning] = "Cannot Sort"
+	@movies = Movie.all 
+      end
+    else
+      @movies = Movie.all
+    end 			
   end
 
   def show
